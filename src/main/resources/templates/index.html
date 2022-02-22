@@ -75,23 +75,27 @@
          style="flex-grow: 1;z-index: 9;display: flex;align-content: space-around;justify-content: space-evenly;align-items: stretch;">
         <div class="formbg-outer">
             <div class="formbg2">
-                <div class="formbg-inner padding-horizontal--48" id="getBooks">
-                    <div>
-                        <input name="bookSearch" id="bookSearch">
-                        <button id="searchButton">Find</button>
+                <div class="formbg-inner padding-horizontal--49" id="getBooks">
+                    <div style="
+                        padding: 10px;
+                        /* margin: 0 auto; */
+                        display: flex;
+                        align-content: stretch;
+                        justify-content: center;
+                        ">
+                        <input name="bookSearch" id="bookSearch" class="field2" style="
+                            margin: auto;
+                        ">
+                        <button id="searchButton" class="search-button">Find</button>
                     </div>
                     <table style="word-break: break-all;">
                         <thead>
-                        <th>title</th>
-                        <th>isbn</th>
-                        <th>author</th>
-                        </thead>
+                        <tr><th>title</th>
+                            <th>isbn</th>
+                            <th>author</th>
+                        </tr></thead>
                         <tbody id="booksTable">
-                        <tr th:each="book: ${books}">
-                            <td th:text="${book.title}"></td>
-                            <td th:text="${book.isbn}"></td>
-                            <td th:text="${book.author}"></td>
-                        </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -103,11 +107,11 @@
     $(function () {
         function getBooks() {
             var $books = $('#booksTable');
-            $books.empty();
 
             $.ajax({
                 url: '/get-books',
                 success: function (response) {
+                    $books.empty();
                     response.forEach(function (book) {
                         $books.append('<tr><td>' + book.title + '</td><td>' +
                             book.isbn + '</td><td>' + book.author + '</td></tr>');
@@ -115,15 +119,16 @@
                 }
             });
         }
-        $('#searchButton').click(function(){
+
+        $('#searchButton').click(function () {
             var $books = $('#booksTable');
-            $books.empty();
             var val = $("#bookSearch").val();
 
             $.ajax({
-                url: '/get-books?name='+ val,
+                url: '/get-books?name=' + val,
                 success: function (response) {
-                    response.forEach(function(book){
+                    $books.empty();
+                    response.forEach(function (book) {
                         $books.append('<tr><td>' + book.title + '</td><td>' +
                             book.isbn + '</td><td>' + book.author + '</td></tr>');
                     })
@@ -147,13 +152,8 @@
                     xhr.setRequestHeader('Content-Type', 'application/json')
                 },
                 success: function (response) {
-                    console.log(response);
+                    // console.log(response);
                     getBooks();
-                    /*if(response.status === 200){
-                        console.log(response);
-                        getBooks();
-                        console.log(response);
-                    }*/
                 }
             });
         });

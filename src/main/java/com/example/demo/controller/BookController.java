@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequiredArgsConstructor
 public class BookController {
-    private final BookService bookService;
 ////    @GetMapping("/old-book-create")
 ////    public String oldBookForm(){
 ////        return "redirect:/book-create";
@@ -46,12 +44,6 @@ public class BookController {
 //        model.addAttribute("books", BookRepository.getBooks());
 //        return "saved-book";
 //    }
-
-    @RequestMapping("/")
-    public String index () {
-        return "index";
-    }
-
     @ResponseBody
     @GetMapping("/get-books")
     public List<BookDto> getBooksByName (@RequestParam(value = "name", required = false) final String requiredField) {
@@ -61,16 +53,5 @@ public class BookController {
         return BookRepository.getBooks().stream().filter(
                 bookDto -> bookDto.getTitle().contains(requiredField) ||
                         bookDto.getIsbn().contains(requiredField)).collect(Collectors.toList());
-    }
-
-    @RequestMapping(value = "/create-book", method = RequestMethod.POST)
-    public ResponseEntity<BookResponseDto> createBook(@RequestBody final BookDto bookDto) {
-        System.out.println("Accept login request: " + bookDto);
-
-        BookRepository.addBook(bookDto);
-        final BookResponseDto responseDto = bookService.doLogin(bookDto);
-
-        return ResponseEntity.ok()
-                .body(responseDto);
     }
 }
