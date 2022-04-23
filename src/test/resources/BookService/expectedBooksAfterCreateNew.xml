@@ -1,0 +1,7 @@
+<dataset>
+    <books isbn="isbn1" author="author1" title="title1"/>
+    <books isbn="isbn2" author="author2" title="title2"/>
+    <books isbn="isbn3" author="author3" title="title3"/>
+
+    <books isbn="newISBN" author="newAuthor" title="newTitle"/>
+</dataset>
