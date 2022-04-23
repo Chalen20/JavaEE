@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Book;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,10 +35,10 @@ public class BookRestController {
 //    }
 
     @RequestMapping(value = "/create-book", method = RequestMethod.POST)
-    public ResponseEntity<BookEntity> createBook(@RequestBody final BookDto bookDto) {
+    public ResponseEntity<BookEntity> createBook(@RequestBody final BookEntity bookDto) {
         System.out.println("Accept request: " + bookDto);
 
-        BookEntity bookEntity = bookService.createBook(bookDto);
+        BookEntity bookEntity = bookService.createBook(bookDto.getAuthor(), bookDto.getTitle(), bookDto.getIsbn());
 
         return ResponseEntity.ok()
                 .body(bookEntity);

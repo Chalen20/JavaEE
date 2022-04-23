@@ -23,15 +23,15 @@ public class BookService {
         return entityManager.merge(user);
     }
 
-    @Transactional
-    public BookEntity createBook(BookDto bookDto) {
-        BookEntity user = new BookEntity();
-        user.setAuthor(bookDto.getAuthor());
-        user.setTitle(bookDto.getTitle());
-        user.setIsbn(bookDto.getIsbn());
-
-        return entityManager.merge(user);
-    }
+//    @Transactional
+//    public BookEntity createBook(BookDto bookDto) {
+//        BookEntity user = new BookEntity();
+//        user.setAuthor(bookDto.getAuthor());
+//        user.setTitle(bookDto.getTitle());
+//        user.setIsbn(bookDto.getIsbn());
+//
+//        return entityManager.merge(user);
+//    }
 
     @Transactional
     public List<BookEntity> findAllBooks() {
