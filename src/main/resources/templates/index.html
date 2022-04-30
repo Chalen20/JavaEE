@@ -90,10 +90,12 @@
                     </div>
                     <table style="word-break: break-all;">
                         <thead>
-                        <tr><th>title</th>
+                        <tr>
+                            <th>title</th>
                             <th>isbn</th>
                             <th>author</th>
-                        </tr></thead>
+                        </tr>
+                        </thead>
                         <tbody id="booksTable">
                         <tr th:each="book: ${books}">
                             <td th:text="${book.title}"></td>
@@ -103,40 +105,103 @@
                         </tr>
                         </tbody>
                     </table>
+                    <div id="nextPageDiv">
+                        <button id="prevPage" onclick="prevPage()" class="search-button" th:class="${isFirst}"><-</button>
+                        <button id="nextPage" onclick="nextPage()" class="search-button" th:class="${isLast}">-></button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script>
+    let RESPONSE = 0
+    let NAME = ""
+    function prevPage() {
+        goPage(false);
+    }
+
+    function nextPage() {
+        goPage(true);
+    }
+
+    function goPage(isNext) {
+        let $books = $('#booksTable');
+        let $nextPage = $('#nextPageDiv');
+        page = (RESPONSE === 0) ? 0 : RESPONSE.pageable.pageNumber
+
+        $.ajax({
+            url: '/get-books?page=' + (isNext ? (page + 1) : (page - 1)) + "&name=" + NAME,
+            success: function (response) {
+                $books.empty();
+                $nextPage.empty();
+                let content = response.content
+                content.forEach(function (book) {
+                    $books.append('<tr><td>' + book.title + '</td><td><a href="/book/' + book.isbn + '">' +
+                        book.isbn + '</a></td><td>' + book.author + '</td></tr>');
+                })
+                if (!response.first) {
+                    $nextPage.append('<button id="prevPage" onclick="prevPage()" class="search-button"><-</button>')
+                }
+                if (!response.last) {
+                    $nextPage.append('<button id="nextPage" onclick="nextPage()" class="search-button">-></button>')
+                }
+                RESPONSE = response
+            }
+        });
+    }
+
     $(function () {
+
         function getBooks() {
-            var $books = $('#booksTable');
+            let $books = $('#booksTable');
+            let $nextPage = $('#nextPageDiv');
 
             $.ajax({
                 url: '/get-books',
                 success: function (response) {
                     $books.empty();
-                    response.forEach(function (book) {
-                        $books.append('<tr><td>' + book.title + '</td><td><a href="/book/' + book.isbn  + '">' +
+                    $nextPage.empty();
+                    let content = response.content
+                    content.forEach(function (book) {
+                        $books.append('<tr><td>' + book.title + '</td><td><a href="/book/' + book.isbn + '">' +
                             book.isbn + '</a></td><td>' + book.author + '</td></tr>');
                     })
+                    if (!response.first) {
+                        $nextPage.append('<button id="prevPage" onclick="prevPage()" class="search-button"><-</button>')
+                    }
+                    if (!response.last) {
+                        $nextPage.append('<button id="nextPage" onclick="nextPage()" class="search-button">-></button>')
+                    }
+                    RESPONSE = response
+                    NAME = ""
                 }
             });
         }
 
         $('#searchButton').click(function () {
-            var $books = $('#booksTable');
-            var val = $("#bookSearch").val();
+            let $books = $('#booksTable');
+            let $nextPage = $('#nextPageDiv');
+            let val = $("#bookSearch").val();
 
             $.ajax({
                 url: '/get-books?name=' + val,
                 success: function (response) {
                     $books.empty();
-                    response.forEach(function (book) {
-                        $books.append('<tr><td>' + book.title + '</td><td><a href="/book/' + book.isbn  + '">' +
+                    $nextPage.empty();
+                    let content = response.content
+                    content.forEach(function (book) {
+                        $books.append('<tr><td>' + book.title + '</td><td><a href="/book/' + book.isbn + '">' +
                             book.isbn + '</a></td><td>' + book.author + '</td></tr>');
                     })
+                    if (!response.first) {
+                        $nextPage.append('<button id=prevPage" onclick="prevPage()" class="search-button"><-</button>')
+                    }
+                    if (!response.last) {
+                        $nextPage.append('<button id="nextPage" onclick="nextPage()" class="search-button">-></button>')
+                    }
+                    RESPONSE = response
+                    NAME = val
                 }
             });
         });

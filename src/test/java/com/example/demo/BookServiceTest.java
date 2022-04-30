@@ -31,7 +31,7 @@ public class BookServiceTest extends AbstractTest {
     @Sql("/BookService/init.sql")
     @Sql(value = "/BookService/clean-up.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void shouldSelectAllBooks() {
-        assertThat(service.findAllBooks())
+        assertThat(service.findAllBooks(0))
                 .hasSize(3);
     }
 
@@ -40,7 +40,7 @@ public class BookServiceTest extends AbstractTest {
     @Sql(value = "/BookService/clean-up.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void shouldCreateBook() {
         service.createBook("newAuthor", "newTitle", "newISBN");
-        assertThat(service.findAllBooks())
+        assertThat(service.findAllBooks(0))
                 .hasSize(4);
     }
 
@@ -48,7 +48,8 @@ public class BookServiceTest extends AbstractTest {
     @Sql("/BookService/init.sql")
     @Sql(value = "/BookService/clean-up.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void shouldFindBookWhereAuthorOrTitleOrISBNContains1() {
-        assertThat(service.findBookWhereAuthorOrTitleOrISBNContains("1"))
+        //System.out.println(service.findBookWhereAuthorOrTitleOrISBNContains("1", 0));
+        assertThat(service.findBookWhereAuthorOrTitleOrISBNContains("1", 0).getContent())
                 .hasSize(1);
     }
 
@@ -56,7 +57,7 @@ public class BookServiceTest extends AbstractTest {
     @Sql("/BookService/init.sql")
     @Sql(value = "/BookService/clean-up.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void shouldFindBookWhereAuthorOrTitleOrISBNContains3() {
-        assertThat(service.findBookWhereAuthorOrTitleOrISBNContains("isbn"))
+        assertThat(service.findBookWhereAuthorOrTitleOrISBNContains("isbn", 0).getContent())
                 .hasSize(3);
     }
 
@@ -74,7 +75,7 @@ public class BookServiceTest extends AbstractTest {
     @DatabaseSetup("/BookService/init.xml")
     @DatabaseTearDown("/BookService/clean-up.xml")
     void shouldSelectAllBooks_dbunit() {
-        assertThat(service.findAllBooks())
+        assertThat(service.findAllBooks(0))
                 .hasSize(3);
     }
 

@@ -1,20 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.BookServiceDTO;
 import com.example.demo.DB.BookEntity;
 import com.example.demo.DB.BookService;
-import com.example.demo.dto.BookDto;
-import com.example.demo.dto.BookResponseDto;
-import com.example.demo.repos.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Book;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,10 +50,12 @@ public class BookRestController {
 
     @ResponseBody
     @GetMapping("/get-books")
-    public List<BookEntity> getBooksByName (@RequestParam(value = "name", required = false) final String requiredField) {
-        if (requiredField == null) {
-            return bookService.findAllBooks();
+    public Page<BookEntity> getBooksByName (@RequestParam(value = "name", required = false) final String requiredField,
+                                            @RequestParam(value = "page", required = false, defaultValue = "0") final int pageNumber) {
+        if (requiredField == null || requiredField.isEmpty()) {
+            return bookService.findAllBooks(pageNumber);
         }
-        return bookService.findBookWhereAuthorOrTitleOrISBNContains(requiredField);
+        //return bookService.findAllBooks(pageNumber);
+        return bookService.findBookWhereAuthorOrTitleOrISBNContains(requiredField, pageNumber);
     }
 }

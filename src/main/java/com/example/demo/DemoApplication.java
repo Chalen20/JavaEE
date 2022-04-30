@@ -12,14 +12,14 @@ public class DemoApplication {
 //    }
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(DemoApplication.class, args);
-        displayAllBeans(applicationContext);
+//        displayAllBeans(applicationContext);
     }
 
-    public static void displayAllBeans(ApplicationContext applicationContext) {
-        String[] allBeanNames = applicationContext.getBeanDefinitionNames();
-        for(String beanName : allBeanNames) {
-            System.out.println(beanName);
-        }
-    }
+//    public static void displayAllBeans(ApplicationContext applicationContext) {
+//        String[] allBeanNames = applicationContext.getBeanDefinitionNames();
+//        for(String beanName : allBeanNames) {
+//            System.out.println(beanName);
+//        }
+//    }
 
 }

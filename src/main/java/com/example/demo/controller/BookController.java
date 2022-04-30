@@ -1,19 +1,15 @@
 package com.example.demo.controller;
 
-import com.example.demo.BookServiceDTO;
 import com.example.demo.DB.BookEntity;
 import com.example.demo.DB.BookService;
-import com.example.demo.dto.BookDto;
-import com.example.demo.dto.BookResponseDto;
-import com.example.demo.repos.BookRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @Controller
@@ -65,6 +61,9 @@ public class BookController {
     public String getBook(final Model model, @PathVariable(value="isbn") String isbn){
         BookEntity book = bookService.getBookByIsbn(isbn);
         System.out.println(book);
+        if (book == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book Not Found");
+        }
         model.addAttribute("book", book);
         return "book-page";
     }

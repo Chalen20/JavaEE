@@ -206,6 +206,25 @@ input[type="submit"] {
     cursor: pointer;
 }
 
+.search-button{
+    /* margin-top: 1px; */
+    /* font-size: 16px; */
+    line-height: 28px;
+    padding: 0 16px;
+    /* width: 100%; */
+    min-height: 36px;
+    border: unset;
+    border-radius: 4px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    outline-color: rgb(84 105 212 / 0.5);
+    background-color: rgb(84, 105, 212);
+    /* box-shadow: rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 12%) 0px 1px 1px 0px, rgb(84 105 212) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 8%) 0px 2px 5px 0px; */
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .field-checkbox input {
     width: 20px;
     height: 15px;
@@ -343,3 +362,12 @@ table td {
     outline: none;
     border-color: dodgerblue;
 }
+
+.display_none{
+    display: none;
+}
+
+.display_block{
+    display: block;
+}
+

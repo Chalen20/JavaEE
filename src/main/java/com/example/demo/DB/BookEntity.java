@@ -1,9 +1,6 @@
 package com.example.demo.DB;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "books")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
