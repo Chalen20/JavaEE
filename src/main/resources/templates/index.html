@@ -7,6 +7,20 @@
 <link th:href="css.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <body>
+<header>
+    <div class="field" th:if="${#authorization.expression('isAnonymous()')}">
+        <a href="/login">Sign In</a>
+    </div>
+    <div class="field" th:if="${#authorization.expression('isAnonymous()')}">
+        <a href="/register-user">Sign Up</a>
+    </div>
+    <div class="field" th:if="${#authorization.expression('isFullyAuthenticated()')}">
+        <a href="/logout">Logout</a>
+    </div>
+    <div class="field" th:if="${#authorization.expression('isFullyAuthenticated()')}">
+        <a href="/favourite-books">Favourite</a>
+    </div>
+</header>
 <div class="login-root">
     <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
         <div class="loginbackground box-background--white padding-top--64">
@@ -44,7 +58,8 @@
                 </div>
             </div>
         </div>
-        <div class="box-root padding-top--24 flex-flex flex-direction--column"
+        <div th:if="${#authorization.expression('hasAuthority(''VIEW_ADMIN'')')}"
+             class="box-root padding-top--24 flex-flex flex-direction--column"
              style="flex-grow: 1;z-index: 9;display: flex;align-content: space-around;justify-content: space-evenly;align-items: stretch;">
             <div class="formbg-outer">
                 <div class="formbg">
@@ -65,6 +80,7 @@
                             <div class="field">
                                 <input type="submit" name="submit" value="Create">
                             </div>
+                            <!--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
                         </form>
                     </div>
                 </div>

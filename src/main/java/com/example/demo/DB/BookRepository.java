@@ -9,4 +9,6 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<BookEntity, String> {
 
     Page<BookEntity> findAllByIsbnLikeOrTitleLike(String isbn, String title, Pageable pageable);
+
+    boolean existsByIsbn(String isbn);
 }

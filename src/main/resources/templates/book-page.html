@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="${book.isbn}">Book</title>
 </head>
 <link th:href="@{../css.css}" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <body>
 <div class="login-root">
     <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
@@ -48,7 +49,7 @@
                             <b th:text="${book.title}"></b>
                         </div>
                         <div>isbn
-                            <b th:text="${book.isbn}"></b>
+                            <b id="isbn" th:text="${book.isbn}"></b>
                         </div>
                         <div>author
                             <b th:text="${book.author}"></b>
@@ -56,11 +57,66 @@
                         <div class="field">
                             <a th:href="@{../..}">← Add</a>
                         </div>
+                        <div id="knopichki" class="field" th:if="${#authorization.expression('isFullyAuthenticated()')}">
+                            <button th:classappend="${isUserFavourites} ? 'display_none' : 'display_block'"
+                                     id="addToFavourites" class="search-button">+ Favourites</button>
+                            <button th:classappend="${!isUserFavourites} ? 'display_none' : 'display_block'"
+                                    id="removeFromFavourites" class="search-button">- Favourites</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script th:inline="javascript">
+
+    removeFavourite = () => {
+        /*<![CDATA[*/
+        let $isbn = /*[[${book.isbn}]]*/ "";
+        console.log($isbn)
+        /*]]>*/
+
+        $.ajax({
+            type: 'POST',
+            url: '/remove-from-favourite?param='+ $isbn,
+            success: function (response) {
+                console.log(response);
+                let $knopichki = $("#knopichki")
+                $knopichki.empty();
+                $knopichki.append('<button id="addToFavourites" class="search-button" onclick="addFavourite()">+ Favourites</button>')
+            }
+        });
+    }
+
+    addFavourite = () => {
+        /*<![CDATA[*/
+        let $isbn = /*[[${book.isbn}]]*/ "";
+        console.log($isbn)
+        /*]]>*/
+
+        $.ajax({
+            type: 'POST',
+            url: '/add-to-favourite?param=' + $isbn,
+            dataType: 'json',
+            data: "",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Content-Type', 'application/json')
+            },
+            success: function (response) {
+                console.log(response);
+                console.log(1);
+                let $knopichki = $("#knopichki")
+                $knopichki.empty();
+                $knopichki.append('<button id="removeFromFavourites" class="search-button" onclick="removeFavourite()">- Favourites</button>')
+            }
+        });
+    };
+    $(function () {
+        $('#addToFavourites').click(addFavourite);
+
+        $('#removeFromFavourites').click(removeFavourite);
+    });
+</script>
 </body>
 </html>

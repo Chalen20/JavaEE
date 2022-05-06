@@ -2,12 +2,21 @@ package com.example.demo.controller;
 
 import com.example.demo.DB.BookEntity;
 import com.example.demo.DB.BookService;
+import com.example.demo.DB.MyUserDetailsService;
+import com.example.demo.DB.UserService;
+import com.example.demo.domain.entities.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,7 +24,7 @@ public class BookRestController {
 
     // private final BookServiceDTO bookServiceDTO;
     private final BookService bookService;
-
+    private final UserService userService;
 //    @RequestMapping(value = "/create-book", method = RequestMethod.POST)
 //    public ResponseEntity<BookResponseDto> createBook(@RequestBody final BookDto bookDto) {
 //        System.out.println("Accept login request: " + bookDto);
@@ -48,6 +57,42 @@ public class BookRestController {
 //                        bookDto.getIsbn().contains(requiredField)).collect(Collectors.toList());
 //    }
 
+    @PostMapping("/add-to-favourite")
+    public ResponseEntity<UserEntity>  AddToFavourites(@RequestParam(value = "param") final String bookIsbn) {
+        System.out.println("here");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<UserEntity> myUser = userService.findFavouriteByLogin(username);
+        BookEntity book = bookService.getBookByIsbn(bookIsbn);
+        if (myUser.isPresent()) {
+            if (book != null) {
+                UserEntity user = userService.addToFavourites(myUser.get(), book);
+                System.out.println("ok");
+                return ResponseEntity.ok()
+                        .body(user);
+            }
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/remove-from-favourite")
+    public ResponseEntity<UserEntity> RemoveFromFavourites(@RequestParam(value = "param") final String bookIsbn) {
+        System.out.println("here");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<UserEntity> myUser = userService.findFavouriteByLogin(username);
+        BookEntity book = bookService.getBookByIsbn(bookIsbn);
+        if (myUser.isPresent()) {
+            if (book != null) {
+                UserEntity user = userService.removeFromFavourites(myUser.get(), book);
+                System.out.println("ok");
+                return ResponseEntity.ok()
+                        .body(user);
+            }
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
     @ResponseBody
     @GetMapping("/get-books")
     public Page<BookEntity> getBooksByName (@RequestParam(value = "name", required = false) final String requiredField,
@@ -57,5 +102,12 @@ public class BookRestController {
         }
         //return bookService.findAllBooks(pageNumber);
         return bookService.findBookWhereAuthorOrTitleOrISBNContains(requiredField, pageNumber);
+    }
+
+    @GetMapping("/get-favourite-books")
+    public Set<BookEntity> getFavouriteBooks() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userService.findAllFavouriteBooks(username);
     }
 }

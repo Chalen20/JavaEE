@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link th:href="@{../css.css}" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<body>
+<header>
+    <div class="field" th:if="${#authorization.expression('isFullyAuthenticated()')}">
+        <a href="/">Back</a>
+    </div>
+</header>
+<div class="login-root">
+    <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
+        <div class="loginbackground box-background--white padding-top--64">
+            <div class="loginbackground-gridContainer">
+                <div class="box-root flex-flex" style="grid-area: top / start / 8 / end;">
+                    <div class="box-root"
+                         style="background-image: linear-gradient(white 0%, rgb(247, 250, 252) 33%); flex-grow: 1;">
+                    </div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 4 / 2 / auto / 5;">
+                    <div class="box-root box-divider--light-all-2 animationLeftRight tans3s"
+                         style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 6 / start / auto / 2;">
+                    <div class="box-root box-background--blue800" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 7 / start / auto / 4;">
+                    <div class="box-root box-background--blue animationLeftRight" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 8 / 4 / auto / 6;">
+                    <div class="box-root box-background--gray100 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 2 / 15 / auto / end;">
+                    <div class="box-root box-background--cyan200 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 3 / 14 / auto / end;">
+                    <div class="box-root box-background--blue animationRightLeft" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 4 / 17 / auto / 20;">
+                    <div class="box-root box-background--gray100 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 5 / 14 / auto / 17;">
+                    <div class="box-root box-divider--light-all-2 animationRightLeft tans3s"
+                         style="flex-grow: 1;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-root padding-top--24 flex-flex flex-direction--column"
+         style="flex-grow: 1;z-index: 9;display: flex;align-content: space-around;justify-content: space-evenly;align-items: stretch;">
+        <div class="formbg-outer">
+            <div class="formbg2">
+                <div class="formbg-inner padding-horizontal--49" id="getBooks">
+                    <table style="word-break: break-all;">
+                        <thead>
+                        <tr>
+                            <th>title</th>
+                            <th>isbn</th>
+                            <th>author</th>
+                        </tr>
+                        </thead>
+                        <tbody id="booksTable">
+                        <tr th:each="book: ${books}">
+                            <td th:text="${book.title}"></td>
+                            <td><a th:href="@{/book/{isbn}(isbn=${book.isbn})}"
+                                   th:text="${book.isbn}"></a></td>
+                            <td th:text="${book.author}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        function getBooks() {
+            let $books = $('#booksTable');
+
+            $.ajax({
+                url: '/get-favourite-books',
+                success: function (response) {
+                    $books.empty();
+                    let content = response.content
+                    content.forEach(function (book) {
+                        $books.append('<tr><td>' + book.title + '</td><td><a href="/book/' + book.isbn + '">' +
+                            book.isbn + '</a></td><td>' + book.author + '</td></tr>');
+                    })
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

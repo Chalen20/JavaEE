@@ -41,6 +41,11 @@ public class BookService {
         Pageable pageable = PageRequest.of(page, 10);
         return bookRepository.findAll(pageable);
     }
+
+    @Transactional
+    public boolean existsIsbn(String isbn){
+        return bookRepository.existsByIsbn(isbn);
+    }
     //    public List<BookEntity> findAllBooks() {
 //        return entityManager.createQuery("SELECT u FROM BookEntity u", BookEntity.class)
 //                .getResultList();

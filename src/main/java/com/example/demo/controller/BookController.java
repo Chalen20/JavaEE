@@ -2,20 +2,41 @@ package com.example.demo.controller;
 
 import com.example.demo.DB.BookEntity;
 import com.example.demo.DB.BookService;
+import com.example.demo.config.MyPasswordEncoder;
+import com.example.demo.config.WebSecurityConfig;
+import com.example.demo.exeption.UserAlreadyExistAuthenticationException;
+import com.example.demo.DB.UserService;
+import com.example.demo.domain.entities.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Controller
 public class BookController {
 
     private final BookService bookService;
+    private final UserService userService;
+    private final HttpServletRequest servletRequest;
+
+    private final MyPasswordEncoder passwordEncoder;
 ////    @GetMapping("/old-book-create")
 ////    public String oldBookForm(){
 ////        return "redirect:/book-create";
@@ -65,6 +86,50 @@ public class BookController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book Not Found");
         }
         model.addAttribute("book", book);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<UserEntity> myUser = userService.findFavouriteByLogin(username);
+        if (myUser.isPresent()) {
+            boolean isFavourite = userService.isUserFavourite(myUser.get(), book);
+            model.addAttribute("isUserFavourites", isFavourite);
+            System.out.println("ok");
+        }
         return "book-page";
+    }
+
+    @GetMapping(value = "/register-user")
+    public String registerUser() {
+        return "registration-page";
+    }
+
+    @PostMapping(value = "/register-user")
+    public String registerUser(final UserEntity userDto) {
+        UserEntity userEntity = null;
+        try {
+            userEntity = userService.registerUser(userDto.getLogin(), passwordEncoder.encode(userDto.getPassword()));
+        } catch (UserAlreadyExistAuthenticationException e) {
+            // return "redirect:/register-user";
+            System.out.println("UserAlreadyExistAuthenticationException");
+        }
+        try {
+            if (userEntity != null) {
+                servletRequest.login(userDto.getLogin(), userDto.getPassword());
+            }
+        } catch (ServletException e) {
+            System.out.println("ServletException");
+        }
+
+//        return ResponseEntity.ok()
+//                .body(userEntity);
+        return "redirect:/";
+    }
+
+    @GetMapping("/favourite-books")
+    private String favouriteBooks(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Set<BookEntity> books = userService.findAllFavouriteBooks(username);
+        model.addAttribute("books", books);
+        return "favourite-books";
     }
 }

@@ -1,11 +1,10 @@
 package com.example.demo.DB;
 
+import com.example.demo.domain.entities.UserEntity;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "books")
@@ -24,4 +23,8 @@ public class BookEntity {
 
     @Column(name = "author")
     private String author;
+
+//    @ManyToMany(mappedBy = "favourites")
+//    private List<UserEntity> users;
+
 }
