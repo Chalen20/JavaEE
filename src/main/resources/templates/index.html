@@ -244,7 +244,7 @@
                 statusCode: {
                     400: function (response) {
                         let r = response.responseJSON;
-                        let s;
+                        let s = "";
                         r.forEach(function (error) {
                             s += error + '\n';
                         });

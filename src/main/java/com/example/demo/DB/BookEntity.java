@@ -2,6 +2,7 @@ package com.example.demo.DB;
 
 import com.example.demo.domain.entities.UserEntity;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -18,6 +19,7 @@ import java.util.List;
 public class BookEntity {
 
     @Column(name = "title")
+    @Length(max = 255, message = "Title`s length must be <=255")
     @NotEmpty(message = "Title can't be empty")
     private String title;
 
@@ -28,6 +30,7 @@ public class BookEntity {
     private String isbn;
 
     @Column(name = "author")
+    @Length(max = 255, message = "Author`s length must be <=255")
     @NotEmpty(message = "Author can't be empty")
     private String author;
 

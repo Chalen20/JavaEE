@@ -61,11 +61,11 @@
                             <!--<div class="alert alert-danger" role="alert">Неверные учетные данные пользователя</div>-->
                             <div class="field padding-bottom--24">
                                 <label>Login</label>
-                                <input name="Login">
+                                <input name="Login" maxlength="30" required pattern="[a-zA-Z\\d]+">
                             </div>
                             <div class="field padding-bottom--24">
                                 <label>Password</label>
-                                <input name="password" type="password">
+                                <input name="password" type="password" required maxlength="20" minlength="8">
                             </div>
                             <!--<div class="field padding-bottom--24">
                                 <label>Repeat password</label>
