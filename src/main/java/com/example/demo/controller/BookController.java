@@ -4,6 +4,7 @@ import com.example.demo.DB.BookEntity;
 import com.example.demo.DB.BookService;
 import com.example.demo.config.MyPasswordEncoder;
 import com.example.demo.config.WebSecurityConfig;
+import com.example.demo.dto.UserDto;
 import com.example.demo.exeption.UserAlreadyExistAuthenticationException;
 import com.example.demo.DB.UserService;
 import com.example.demo.domain.entities.UserEntity;
@@ -15,14 +16,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +78,7 @@ public class BookController {
 //    }
 
     @RequestMapping("/book/{isbn}")
-    public String getBook(final Model model, @PathVariable(value="isbn") String isbn){
+    public String getBook(final Model model, @PathVariable(value = "isbn") String isbn) {
         BookEntity book = bookService.getBookByIsbn(isbn);
         System.out.println(book);
         if (book == null) {
@@ -98,19 +97,17 @@ public class BookController {
     }
 
     @GetMapping(value = "/register-user")
-    public String registerUser() {
+    public String registerUser(final Model model,
+                               @RequestParam(name = "userExistsError", required = false) final String userExistsError,
+                               @RequestParam(name = "validationError", required = false) final String validationError) {
+        model.addAttribute("validationError", validationError != null);
+        model.addAttribute("userExistsError", userExistsError != null);
         return "registration-page";
     }
 
     @PostMapping(value = "/register-user")
-    public String registerUser(final UserEntity userDto) {
-        UserEntity userEntity = null;
-        try {
-            userEntity = userService.registerUser(userDto.getLogin(), passwordEncoder.encode(userDto.getPassword()));
-        } catch (UserAlreadyExistAuthenticationException e) {
-            // return "redirect:/register-user";
-            System.out.println("UserAlreadyExistAuthenticationException");
-        }
+    public String registerUser(@Valid final UserDto userDto) throws UserAlreadyExistAuthenticationException {
+        UserEntity userEntity = userService.registerUser(userDto.getLogin(), passwordEncoder.encode(userDto.getPassword()));
         try {
             if (userEntity != null) {
                 servletRequest.login(userDto.getLogin(), userDto.getPassword());
@@ -125,7 +122,7 @@ public class BookController {
     }
 
     @GetMapping("/favourite-books")
-    private String favouriteBooks(Model model){
+    private String favouriteBooks(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Set<BookEntity> books = userService.findAllFavouriteBooks(username);

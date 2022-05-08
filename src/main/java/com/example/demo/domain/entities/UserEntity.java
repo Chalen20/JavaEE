@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 import com.example.demo.DB.BookEntity;
 import lombok.AllArgsConstructor;

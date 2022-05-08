@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.DB.BookEntity;
-import com.example.demo.DB.BookService;
-import com.example.demo.DB.MyUserDetailsService;
-import com.example.demo.DB.UserService;
+import com.example.demo.DB.*;
 import com.example.demo.domain.entities.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,9 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.MapBindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -37,13 +40,20 @@ public class BookRestController {
 //    }
 
     @RequestMapping(value = "/create-book", method = RequestMethod.POST)
-    public ResponseEntity<BookEntity> createBook(@RequestBody final BookEntity bookDto) {
-        System.out.println("Accept request: " + bookDto);
+    public ResponseEntity<BookEntity> createBook(
+            @Valid @RequestBody final BookEntity bookDto) throws MethodArgumentNotValidException {
+        if (Utils.isValidISBN(bookDto.getIsbn())) {
+            System.out.println("Accept request: " + bookDto);
 
-        BookEntity bookEntity = bookService.createBook(bookDto.getAuthor(), bookDto.getTitle(), bookDto.getIsbn());
+            BookEntity bookEntity = bookService.createBook(bookDto.getAuthor(), bookDto.getTitle(), bookDto.getIsbn());
 
-        return ResponseEntity.ok()
-                .body(bookEntity);
+            return ResponseEntity.ok()
+                    .body(bookEntity);
+        } else {
+            BindingResult bindingResult = new MapBindingResult(new HashMap<>(), "book");
+            bindingResult.addError(new FieldError("bookEntity", "isbn", "ISBN is invalid"));
+            throw new MethodArgumentNotValidException(null, bindingResult);
+        }
     }
 
 //    @ResponseBody

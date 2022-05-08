@@ -5,6 +5,8 @@
     <title>Title</title>
 </head>
 <link th:href="css.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
 <body>
 <div class="login-root">
     <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
@@ -49,6 +51,14 @@
                 <div class="formbg">
                     <div class="formbg-inner padding-horizontal--48">
                         <form id="stripe-login" action="/register-user" method="post">
+                            <div class="alert alert-danger width_class" role="alert" th:if="${userExistsError} == true">
+                                Username already exists. Try again.
+                            </div>
+                            <div class="alert alert-danger width_class" role="alert" th:if="${validationError} == true">
+                                - Login must consists of latin letters and numbers <br/>
+                                - Password must have 8-20 symbols
+                            </div>
+                            <!--<div class="alert alert-danger" role="alert">Неверные учетные данные пользователя</div>-->
                             <div class="field padding-bottom--24">
                                 <label>Login</label>
                                 <input name="Login">

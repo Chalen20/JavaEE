@@ -48,5 +48,14 @@ insert into user_to_permissions (user_id, permission_id)
 values ((select id from users where login = 'admin'), (select id from permissions where permission = 'VIEW_ADMIN'));
 
 insert into books (isbn, title, author)
-values ('Book1', 'title1', 'author1'),
-       ('Book2', 'title2', 'author2');
+values ('9783161484100', 'title1', 'author1'),
+       ('9781411686915', 'title2', 'author2'),
+       ('9781782808084', 'title3', 'author3'),
+       ('9780123456786', 'title4', 'author4'),
+       ('9791234567896', 'title5', 'author5'),
+       ('9781888799972', 'title6', 'author6'),
+       ('9780936385402', 'title7', 'author7'),
+       ('9780976773665', 'title8', 'author8'),
+       ('9780140266900', 'title9', 'author9'),
+       ('9782123456803', 'title10', 'author10'),
+       ('9780075752127', 'title11', 'author11');

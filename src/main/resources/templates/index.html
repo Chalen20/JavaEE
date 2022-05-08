@@ -122,8 +122,8 @@
                         </tbody>
                     </table>
                     <div id="nextPageDiv">
-                        <button id="prevPage" onclick="prevPage()" class="search-button" th:class="${isFirst}"><-</button>
-                        <button id="nextPage" onclick="nextPage()" class="search-button" th:class="${isLast}">-></button>
+                        <button id="prevPage" onclick="prevPage()" class="search-button" th:classappend="${isFirst}"><-</button>
+                        <button id="nextPage" onclick="nextPage()" class="search-button" th:classappend="${isLast}">-></button>
                     </div>
                 </div>
             </div>
@@ -237,9 +237,23 @@
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader('Content-Type', 'application/json')
                 },
-                success: function (response) {
-                    // console.log(response);
-                    getBooks();
+                // success: function (response) {
+                //     console.log(response);
+                //     getBooks();
+                // },
+                statusCode: {
+                    400: function (response) {
+                        let r = response.responseJSON;
+                        let s;
+                        r.forEach(function (error) {
+                            s += error + '\n';
+                        });
+                        alert(s);
+                    },
+                    200: function (response) {
+                        console.log(response);
+                        getBooks();
+                    }
                 }
             });
         });
